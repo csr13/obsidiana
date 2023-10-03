@@ -1,0 +1,143 @@
+version: '3'
+
+services:
+
+  api: &api
+    container_name: api
+    image: api
+    build: 
+      context: .
+      dockerfile: docker/api/local/Dockerfile
+    entrypoint: /start.sh
+    volumes:
+      - ./src/:/src/:rw
+      - ./src/static/:/usr/share/nginx/html/static/
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file: ['./docker/api/local/.env']
+    depends_on:
+      - database
+      - redis
+    restart: unless-stopped
+    networks:
+      obsidiana:
+        ipv4_address: 172.20.0.2
+    expose:
+      - "6969"
+
+  api_tasks:
+    container_name: tasks
+    image: tasks
+    build:
+      context: .
+      dockerfile: docker/api_tasks/Dockerfile
+    entrypoint: /start-worker.sh
+    volumes:
+      - ./src:/src/
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file: ['./docker/api/local/.env']
+    depends_on:
+      - database
+      - redis
+      - api
+    restart: unless-stopped
+    networks:
+      obsidiana:
+        ipv4_address: 172.20.0.4
+
+  api-tasks-monitor:
+    <<: *api
+    container_name: tasks_monitor
+    image: tasks_monitor
+    entrypoint: /start-monitor.sh
+    expose:
+      - "5566"
+    networks:
+      obsidiana:
+        ipv4_address: 172.20.0.5
+
+  database:
+    container_name: database
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: chicamalAde20
+      POSTGRES_USER: chicamala
+      POSTGRES_DB: tubebesita
+    volumes:
+      - database:/var/lib/postgresql/data
+    networks:
+      obsidiana:
+        ipv4_address: 172.20.0.6
+    expose:
+      - "5432"
+  
+  redis:
+    container_name: obsidiana_redis
+    image: redis
+    restart: unless-stopped
+    networks:
+      obsidiana:
+        ipv4_address: 172.20.0.7
+    expose:
+      - "6379"
+
+  ####################################################
+  # налаштувати основний проксі для сканерів
+  #################################################### 
+
+  proxy:
+    container_name: proxy
+    image: proxy
+    build:
+      context: .
+      dockerfile: ./docker/tor_proxy/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - api
+    expose:
+      - 666
+      - 8888
+    networks:
+      obsidiana:
+        ipv4_address: 172.20.0.8
+
+  ####################################################
+  # одноразові контейнери -- невеликі розміром 350 МБ
+  #################################################### 
+  
+  wafw00f:
+    container_name: wafw00f
+    image: wafw00f
+    build:
+      context: .
+      dockerfile: ./docker/wafw00f/Dockerfile
+    depends_on:
+      - api
+
+  dirbpy:
+    container_name: dirbpy
+    image: dirbpy
+    build:
+      context: .
+      dockerfile: ./docker/dirbpy/Dockerfile
+    depends_on:
+      - api
+
+  sslyze:
+    container_name: sslyze
+    image: sslyze
+    build:
+      context: .
+      dockerfile: ./docker/sslyze/Dockerfile
+    depends_on:
+      - api
+
+volumes:
+  database: {}
+
+networks:
+  obsidiana:
+    name: obsidiana
+    ipam:
+      config:
+        - subnet: 172.20.0.0/9

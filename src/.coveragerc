@@ -1,0 +1,30 @@
+# .coveragerc to control coverage.py
+[run]
+omit =
+    */node_modules/*
+    */__init__.py
+    manage.py
+    */venv/*
+    */tasks.py
+    */migrations/*
+    */core/*
+    */apis/utils/*
+    */tools/*
+    */fixtures/*
+    */tests.py
+    */test_models.py
+    */test_views.py
+    */htmlcov/*
+    /usr/*
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    pragma: no cover
+    @abstract
+
+    # Don't complain if tests don't hit defensive exceptions
+    try:
+    except Exception as e:
+
+show_missing = True
