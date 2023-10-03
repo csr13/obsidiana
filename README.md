@@ -11,7 +11,6 @@
 
 Веб-сканери
 
-- Сканер веб-додатків/веб-сайтів Whatweb https://github.com/urbanadventurer/WhatWeb (dockerized)
 - Сканер веб-застосунків брандмауера WafW00f 🐶 https://github.com/EnableSecurity/wafw00f.git (dockerized)
 - URL Брутфорсер (перелічення URL-адрес сайту) https://github.com/marcolivierbouch/dirbpy (dockerized)
 - SSLyze - сканер SSL та TLS https://github.com/nabla-c0d3/sslyze.git
