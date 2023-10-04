@@ -20,7 +20,6 @@ services:
     restart: unless-stopped
     networks:
       obsidiana:
-        ipv4_address: 172.20.0.2
     expose:
       - "6969"
 
@@ -42,7 +41,6 @@ services:
     restart: unless-stopped
     networks:
       obsidiana:
-        ipv4_address: 172.20.0.4
 
   api-tasks-monitor:
     <<: *api
@@ -53,7 +51,6 @@ services:
       - "5566"
     networks:
       obsidiana:
-        ipv4_address: 172.20.0.5
 
   database:
     container_name: database
@@ -67,7 +64,6 @@ services:
       - database:/var/lib/postgresql/data
     networks:
       obsidiana:
-        ipv4_address: 172.20.0.6
     expose:
       - "5432"
   
@@ -77,7 +73,6 @@ services:
     restart: unless-stopped
     networks:
       obsidiana:
-        ipv4_address: 172.20.0.7
     expose:
       - "6379"
 
@@ -99,7 +94,18 @@ services:
       - 8888
     networks:
       obsidiana:
-        ipv4_address: 172.20.0.8
+  
+  ssh:
+    container_name: ssh
+    image: ssh
+    build:
+      context: . 
+      dockerfile: ./docker/ssh/Dockerfile
+    restart: unless-stopped
+    expose:
+      - 2222
+    networks:
+      - obsidiana
 
   ####################################################
   # одноразові контейнери -- невеликі розміром 350 МБ
@@ -138,6 +144,3 @@ volumes:
 networks:
   obsidiana:
     name: obsidiana
-    ipam:
-      config:
-        - subnet: 172.20.0.0/9
