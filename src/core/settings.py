@@ -50,6 +50,7 @@ APPLICATION_APPS = [
     'apis.scanners.sslyze',
     'apis.scanners.wafw00f',
     'apis.scanners.scanvus',
+    'apis.scanners.ssh',
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS + APPLICATION_APPS

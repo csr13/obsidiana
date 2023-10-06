@@ -101,6 +101,9 @@ services:
     build:
       context: . 
       dockerfile: ./docker/ssh/Dockerfile
+    env_file: ['./docker/ssh/.env']
+    volumes:
+      - ./docker/ssh/sshprank:/src:rw
     restart: unless-stopped
     expose:
       - 2222

@@ -143,6 +143,12 @@ HELP = BOLD + '''usage''' + NORM + '''
   $ sshprank -b hosts.txt > sshds2.txt
 '''
 
+
+try:
+    SHODAN_API_KEY = os.environ["SHODAN_API_KEY"]
+except Exception as e:
+    raise Exception(str(e))
+
 stargets = []   # shodan
 excluded = {}
 opts = {
@@ -153,7 +159,7 @@ opts = {
   'sho_str': None,
   'sho_page': None,
   'sho_lim': None,
-  'sho_key': 'Pp1oDSiavzKQJSsRgdzuxFJs8PQXzBL9',
+  'sho_key': SHODAN_API_KEY,
   'user': 'root',
   'pass': 'root',
   'cmd': None,
@@ -194,7 +200,6 @@ def log(msg='', _type='normal', pre_esc='', esc='\n'):
     sys.stderr.flush()
     for i in ('-', '\\', '|', '/'):
       sys.stderr.write(f'{pre_esc}{BOLD}{BLUE}[{i}] {NORM}{msg}')
-      #time.sleep(0.02)
 
   return
 

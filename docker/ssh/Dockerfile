@@ -10,3 +10,5 @@ RUN apk update && apk add --update --no-cache gcc \
 WORKDIR /src
 
 COPY ./docker/ssh/sshprank .
+
+RUN python3 -m pip install -r requirements.txt
